@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/TaranovDmitry/Microservices"
 	"github.com/TaranovDmitry/Microservices/pkg/handler"
 	"github.com/TaranovDmitry/Microservices/repository"
 	"github.com/TaranovDmitry/Microservices/service"
@@ -24,21 +23,22 @@ func main() {
 	}
 
 	db, err := repository.NewPostgresDB(repository.Config{
-		Host: viper.GetString("db.host"),
-		Port: viper.GetString("db.port"),
+		Host:     viper.GetString("db.host"),
+		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),
-		DBName: viper.GetString("db.dbname"),
-		SSLMode: viper.GetString("db.sslmode"),
+		DBName:   viper.GetString("db.dbname"),
+		SSLMode:  viper.GetString("db.sslmode"),
 		Password: os.Getenv("DB_PASSWORD"),
 	})
-	if err != nil{
+	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
+
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 
-	srv := new(Microservices.Server)
+	srv := new(Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRouts()); err != nil {
 		logrus.Fatalf("error occured while running http server %s", err.Error())
 	}
