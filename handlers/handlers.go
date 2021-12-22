@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"net/http"
+
+	"github.com/TaranovDmitry/Microservices/entity"
 )
 
 type err struct {
@@ -16,7 +19,7 @@ func newErrorResponse(c *gin.Context, statusCode int, message string) {
 }
 
 func (h *Handler) allPorts(c *gin.Context) {
-	ports, err := h.services.FetchAllPortsFromDB()
+	ports, err := h.service.AllPorts()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -26,5 +29,15 @@ func (h *Handler) allPorts(c *gin.Context) {
 }
 
 func (h *Handler) updateList(c *gin.Context) {
+	var ports entity.Ports
 
+	// unmarshall Request Body to ports
+
+	err := h.service.Update(ports)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.AbortWithStatus(http.StatusCreated)
 }

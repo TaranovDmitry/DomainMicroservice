@@ -1,8 +1,11 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"fmt"
 	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -19,7 +22,15 @@ type DBConfig struct {
 	Password string
 }
 
-func New() Config {
+func New() (Config, error) {
+	if err := initConfig(); err != nil {
+		return Config{}, fmt.Errorf("failed to init config: %w", err)
+	}
+
+	if err := godotenv.Load(); err != nil {
+		return Config{}, fmt.Errorf("failed to get env var: %w", err)
+	}
+
 	return Config{
 		Port: viper.GetString("port"),
 		DB: DBConfig{
@@ -29,5 +40,11 @@ func New() Config {
 			DBName:   viper.GetString("db.dbname"),
 			SSLMode:  viper.GetString("db.sslmode"),
 			Password: os.Getenv("DB_PASSWORD"),
-		}}
+		}}, nil
+}
+
+func initConfig() error {
+	viper.AddConfigPath("config")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
 }

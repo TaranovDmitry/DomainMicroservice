@@ -2,15 +2,15 @@ package main
 
 import (
 	"context"
+	"net/http"
+	"time"
+
 	"github.com/TaranovDmitry/Microservices/config"
 	"github.com/TaranovDmitry/Microservices/handlers"
 	"github.com/TaranovDmitry/Microservices/repository"
 	"github.com/TaranovDmitry/Microservices/services"
-	"github.com/joho/godotenv"
+
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
-	"net/http"
-	"time"
 )
 
 type Server struct {
@@ -20,15 +20,10 @@ type Server struct {
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	if err := initConfig(); err != nil {
-		logrus.Fatalf("error initialzing configs: %s", err.Error())
+	cfg, err := config.New()
+	if err != nil {
+		logrus.Fatalf("failed to initialize config %v", err)
 	}
-
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
-
-	cfg := config.New()
 
 	db, err := repository.NewPostgresDB(cfg.DB)
 	if err != nil {
@@ -43,12 +38,6 @@ func main() {
 	if err := srv.Run(cfg.Port, handler.InitRouts()); err != nil {
 		logrus.Fatalf("error occured while running http server %s", err.Error())
 	}
-}
-
-func initConfig() error {
-	viper.AddConfigPath("config")
-	viper.SetConfigName("config")
-	return viper.ReadInConfig()
 }
 
 func (s *Server) Run(port string, handler http.Handler) error {

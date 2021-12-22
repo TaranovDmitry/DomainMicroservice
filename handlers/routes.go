@@ -1,16 +1,22 @@
 package handlers
 
 import (
-	"github.com/TaranovDmitry/Microservices/services"
 	"github.com/gin-gonic/gin"
+
+	"github.com/TaranovDmitry/Microservices/entity"
 )
 
-type Handler struct {
-	services *services.Service
+type PortService interface {
+	AllPorts() (entity.Ports, error)
+	Update(ports entity.Ports) error
 }
 
-func NewHandler(services *services.Service) *Handler {
-	return &Handler{services: services}
+type Handler struct {
+	service PortService
+}
+
+func NewHandler(services PortService) *Handler {
+	return &Handler{service: services}
 }
 
 func (h *Handler) InitRouts() *gin.Engine {

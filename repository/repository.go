@@ -2,7 +2,9 @@ package repository
 
 import (
 	"fmt"
+
 	"github.com/TaranovDmitry/Microservices/entity"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -16,7 +18,7 @@ func NewPortsRepository(db *sqlx.DB) *Ports {
 	}
 }
 
-func (p Ports) AllPorts() (entity.Ports, error) {
+func (p Ports) FetchAllPortsFromDB() (entity.Ports, error) {
 	var ports entity.Ports
 	err := p.db.Select(&ports, "SELECT * FROM ports")
 	if err != nil {
@@ -26,6 +28,6 @@ func (p Ports) AllPorts() (entity.Ports, error) {
 	return ports, nil
 }
 
-func (p Ports) UpdatePort(ports entity.Ports) error {
+func (p Ports) UpdatePortsInDB(ports entity.Ports) error {
 	return nil
 }
