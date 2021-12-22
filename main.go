@@ -1,15 +1,21 @@
 package main
 
 import (
-	"github.com/TaranovDmitry/Microservices/pkg/handler"
+	"context"
+	"github.com/TaranovDmitry/Microservices/config"
+	"github.com/TaranovDmitry/Microservices/handlers"
 	"github.com/TaranovDmitry/Microservices/repository"
-	"github.com/TaranovDmitry/Microservices/service"
+	"github.com/TaranovDmitry/Microservices/services"
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"os"
+	"net/http"
+	"time"
 )
+
+type Server struct {
+	httpServer *http.Server
+}
 
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
@@ -22,30 +28,40 @@ func main() {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
 
-	db, err := repository.NewPostgresDB(repository.Config{
-		Host:     viper.GetString("db.host"),
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		DBName:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("db.sslmode"),
-		Password: os.Getenv("DB_PASSWORD"),
-	})
+	cfg := config.New()
+
+	db, err := repository.NewPostgresDB(cfg.DB)
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
-	handlers := handler.NewHandler(services)
+	portsRepository := repository.NewPortsRepository(db)
+	service := services.NewService(portsRepository)
+	handler := handlers.NewHandler(service)
 
-	srv := new(Server)
-	if err := srv.Run(viper.GetString("port"), handlers.InitRouts()); err != nil {
+	var srv Server
+	if err := srv.Run(cfg.Port, handler.InitRouts()); err != nil {
 		logrus.Fatalf("error occured while running http server %s", err.Error())
 	}
 }
 
 func initConfig() error {
-	viper.AddConfigPath("configs")
+	viper.AddConfigPath("config")
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
+}
+
+func (s *Server) Run(port string, handler http.Handler) error {
+	s.httpServer = &http.Server{
+		Addr:           ":" + port,
+		Handler:        handler,
+		MaxHeaderBytes: 1 << 20, // 1 MB
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+	}
+	return s.httpServer.ListenAndServe()
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.httpServer.Shutdown(ctx)
 }
