@@ -1,15 +1,31 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"fmt"
+	"github.com/TaranovDmitry/Microservices/entity"
+	"github.com/jmoiron/sqlx"
+)
 
-type TodoList interface {
-
+type Ports struct {
+	db *sqlx.DB
 }
 
-type Repository struct {
-	TodoList
+func NewPortsRepository(db *sqlx.DB) *Ports {
+	return &Ports{
+		db: db,
+	}
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
-	return &Repository{}
+func (p Ports) AllPorts() (entity.Ports, error) {
+	var ports entity.Ports
+	err := p.db.Select(&ports, "SELECT * FROM ports")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all ports from DB: %w", err)
+	}
+
+	return ports, nil
+}
+
+func (p Ports) UpdatePort(ports entity.Ports) error {
+	return nil
 }
