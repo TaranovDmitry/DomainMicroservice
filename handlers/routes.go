@@ -2,22 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-
-	"github.com/TaranovDmitry/DomainMicroservice/entity"
 )
-
-type PortService interface {
-	AllPorts() (entity.Ports, error)
-	Upsert(ports entity.Ports) error
-}
-
-type Handler struct {
-	service PortService
-}
-
-func NewHandler(services PortService) *Handler {
-	return &Handler{service: services}
-}
 
 func (h *Handler) InitRouts() *gin.Engine {
 	router := gin.New()

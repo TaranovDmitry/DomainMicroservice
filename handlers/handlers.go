@@ -9,6 +9,19 @@ import (
 	"github.com/TaranovDmitry/DomainMicroservice/entity"
 )
 
+type PortService interface {
+	AllPorts() (entity.Ports, error)
+	Upsert(ports entity.Ports) error
+}
+
+type Handler struct {
+	service PortService
+}
+
+func NewHandler(services PortService) *Handler {
+	return &Handler{service: services}
+}
+
 type err struct {
 	Message string `json:"message"`
 }
