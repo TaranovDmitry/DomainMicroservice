@@ -8,7 +8,7 @@ import (
 
 type PortService interface {
 	AllPorts() (entity.Ports, error)
-	Update(ports entity.Ports) error
+	Upsert(ports entity.Ports) error
 }
 
 type Handler struct {
@@ -22,9 +22,10 @@ func NewHandler(services PortService) *Handler {
 func (h *Handler) InitRouts() *gin.Engine {
 	router := gin.New()
 
-	api := router.Group("/api")
-	api.GET("/ports", h.allPorts)
-	api.POST("/ports", h.updateList)
+	domain := router.Group("/domain")
+	domainV1 := domain.Group("/v1")
+	domainV1.GET("/ports", h.allPorts)
+	domainV1.POST("/ports", h.updateList)
 
 	return router
 }

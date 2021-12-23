@@ -8,7 +8,7 @@ import (
 
 type PortRepository interface {
 	FetchAllPortsFromDB() (entity.Ports, error)
-	UpdatePortsInDB(ports entity.Ports) error
+	UpsertPortsInDB(ports entity.Ports) error
 }
 
 type Service struct {
@@ -24,12 +24,16 @@ func NewService(pr PortRepository) *Service {
 func (s Service) AllPorts() (entity.Ports, error) {
 	ports, err := s.portRepo.FetchAllPortsFromDB()
 	if err != nil {
-		return nil, fmt.Errorf("service failed to get datat from DB: %w", err)
+		return nil, fmt.Errorf("service failed to get data from DB: %w", err)
 	}
 
 	return ports, err
 }
 
-func (s Service) Update(ports entity.Ports) error {
+func (s Service) Upsert(ports entity.Ports) error {
+	err := s.portRepo.UpsertPortsInDB(ports)
+	if err != nil {
+		return fmt.Errorf("service failed to upsert data in DB: %w", err)
+	}
 	return nil
 }

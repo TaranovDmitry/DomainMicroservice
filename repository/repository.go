@@ -12,6 +12,23 @@ type Ports struct {
 	db *sqlx.DB
 }
 
+const (
+	selectAllQuery = `SELECT * FROM ports`
+	upsertQuery    = `INSERT INTO ports (id, name, isActive, company, email, phone, address, about, registered, latitude, longitude)
+VALUES (:id, :name, :isActive, :company, :email, :phone, :address, :about, :registered, :latitude, :longitude)
+ON CONFLICT (id) DO UPDATE SET
+                               name = excluded.name,
+                               isActive = excluded.isActive,
+                               company = excluded.company,
+                               email = excluded.email,
+                               phone = excluded.phone,
+                               address = excluded.address,
+                               about = excluded.about,
+                               registered = excluded.registered,
+                               latitude = excluded.latitude,
+                               longitude = excluded.longitude;`
+)
+
 func NewPortsRepository(db *sqlx.DB) *Ports {
 	return &Ports{
 		db: db,
@@ -20,7 +37,7 @@ func NewPortsRepository(db *sqlx.DB) *Ports {
 
 func (p Ports) FetchAllPortsFromDB() (entity.Ports, error) {
 	var ports entity.Ports
-	err := p.db.Select(&ports, "SELECT * FROM ports")
+	err := p.db.Select(&ports, selectAllQuery)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all ports from DB: %w", err)
 	}
@@ -28,6 +45,10 @@ func (p Ports) FetchAllPortsFromDB() (entity.Ports, error) {
 	return ports, nil
 }
 
-func (p Ports) UpdatePortsInDB(ports entity.Ports) error {
-	return nil
+func (p Ports) UpsertPortsInDB(ports entity.Ports) error {
+	_, err := p.db.NamedExec(upsertQuery, ports)
+	if err != nil {
+		return fmt.Errorf("failed to upsert ports: %w", err)
+	}
+	return err
 }

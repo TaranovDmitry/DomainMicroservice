@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS ports
 (
-    id serial not null unique,
+    id integer not null unique,
     name varchar(255) not null,
     isActive boolean null,
     company varchar(255) not null,

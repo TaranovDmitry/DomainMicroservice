@@ -3,17 +3,17 @@ package entity
 import "time"
 
 type Port struct {
-	ID         int
-	Name       string
-	IsActive   bool
-	Company    string
-	Email      string
-	Phone      string
-	Address    string
-	About      string
-	Registered time.Time
-	Latitude   float64
-	Longitude  float64
+	ID         int       `json:"id" db:"id"`
+	Name       string    `json:"name" db:"name"`
+	Active     bool      `json:"isActive" db:"isActive"`
+	Company    string    `json:"company" db:"company"`
+	Email      string    `json:"email" db:"email"`
+	Phone      string    `json:"phone" db:"phone"`
+	Address    string    `json:"address" db:"address"`
+	About      string    `json:"about" db:"about"`
+	Registered time.Time `json:"registered" db:"registered"`
+	Latitude   float64   `json:"latitude" db:"latitude"`
+	Longitude  float64   `json:"longitude" db:"longitude"`
 }
 
 type Ports []Port
