@@ -5,7 +5,7 @@ import "time"
 type Port struct {
 	ID         int       `json:"id" db:"id"`
 	Name       string    `json:"name" db:"name"`
-	Active     bool      `json:"isActive" db:"isActive"`
+	IsActive   bool      `json:"isActive" db:"isactive"`
 	Company    string    `json:"company" db:"company"`
 	Email      string    `json:"email" db:"email"`
 	Phone      string    `json:"phone" db:"phone"`

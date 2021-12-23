@@ -13,12 +13,12 @@ type Ports struct {
 }
 
 const (
-	selectAllQuery = `SELECT * FROM ports`
-	upsertQuery    = `INSERT INTO ports (id, name, isActive, company, email, phone, address, about, registered, latitude, longitude)
-VALUES (:id, :name, :isActive, :company, :email, :phone, :address, :about, :registered, :latitude, :longitude)
+	selectAllQuery = `SELECT id, name, isactive, company, email, phone, address, about, registered, latitude, longitude FROM ports`
+	upsertQuery    = `INSERT INTO ports (id, name, isactive, company, email, phone, address, about, registered, latitude, longitude)
+VALUES (:id, :name, :isactive, :company, :email, :phone, :address, :about, :registered, :latitude, :longitude)
 ON CONFLICT (id) DO UPDATE SET
                                name = excluded.name,
-                               isActive = excluded.isActive,
+                               isActive = excluded.isactive,
                                company = excluded.company,
                                email = excluded.email,
                                phone = excluded.phone,
