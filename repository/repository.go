@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 
-	"github.com/TaranovDmitry/Microservices/entity"
+	"github.com/TaranovDmitry/DomainMicroservice/entity"
 
 	"github.com/jmoiron/sqlx"
 )

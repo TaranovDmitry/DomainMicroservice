@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/TaranovDmitry/Microservices/entity"
+	"github.com/TaranovDmitry/DomainMicroservice/entity"
 )
 
 type PortService interface {

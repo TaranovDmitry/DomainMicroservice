@@ -1,4 +1,4 @@
-module github.com/TaranovDmitry/Microservices
+module github.com/TaranovDmitry/DomainMicroservice
 
 go 1.16
 

@@ -3,7 +3,7 @@ package services
 import (
 	"fmt"
 
-	"github.com/TaranovDmitry/Microservices/entity"
+	"github.com/TaranovDmitry/DomainMicroservice/entity"
 )
 
 type PortRepository interface {

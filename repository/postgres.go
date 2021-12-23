@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
-	"github.com/TaranovDmitry/Microservices/config"
+	"github.com/TaranovDmitry/DomainMicroservice/config"
 )
 
 func NewPostgresDB(cfg config.DBConfig) (*sqlx.DB, error) {

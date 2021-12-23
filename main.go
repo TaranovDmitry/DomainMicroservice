@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/TaranovDmitry/Microservices/config"
-	"github.com/TaranovDmitry/Microservices/handlers"
-	"github.com/TaranovDmitry/Microservices/repository"
-	"github.com/TaranovDmitry/Microservices/services"
+	"github.com/TaranovDmitry/DomainMicroservice/config"
+	"github.com/TaranovDmitry/DomainMicroservice/handlers"
+	"github.com/TaranovDmitry/DomainMicroservice/repository"
+	"github.com/TaranovDmitry/DomainMicroservice/services"
 
 	"github.com/sirupsen/logrus"
 )

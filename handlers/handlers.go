@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/TaranovDmitry/Microservices/entity"
+	"github.com/TaranovDmitry/DomainMicroservice/entity"
 )
 
 type err struct {
