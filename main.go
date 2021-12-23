@@ -36,6 +36,7 @@ func main() {
 
 	var srv Server
 	if err := srv.Run(cfg.Port, handler.InitRouts()); err != nil {
+		_ = srv.Shutdown(context.TODO())
 		logrus.Fatalf("error occured while running http server %s", err.Error())
 	}
 }
