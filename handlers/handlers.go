@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,24 +31,11 @@ func (h *Handler) allPorts(c *gin.Context) {
 func (h *Handler) updateList(c *gin.Context) {
 	var ports entity.Ports
 
-	b, err := ioutil.ReadAll(c.Request.Body)
+	err := c.BindJSON(&ports)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	defer c.Request.Body.Close()
-
-	err = json.Unmarshal(b, &ports)
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	//err := c.BindJSON(&ports)
-	//if err != nil {
-	//	newErrorResponse(c, http.StatusBadRequest, err.Error())
-	//	return
-	//}
 
 	err = h.service.Upsert(ports)
 	if err != nil {
