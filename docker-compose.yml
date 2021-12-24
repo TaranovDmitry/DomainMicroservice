@@ -9,12 +9,7 @@ services:
       - .env
     depends_on:
       - postgres
-  client:
-    image: client-service
-    ports:
-      - "8080:8080"
-    depends_on:
-      - domain
+    container_name: domain
   postgres:
     image: postgres
     restart: always
@@ -24,3 +19,4 @@ services:
       POSTGRES_DB: task_db
     ports:
       - "5432:5432"
+    container_name: postgres
