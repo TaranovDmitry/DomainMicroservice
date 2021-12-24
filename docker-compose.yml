@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  domain:
+    build: .
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+  client:
+    image: client-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - domain
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_USER: postgres
+      POSTGRES_DB: task_db
+    ports:
+      - "5432:5432"
