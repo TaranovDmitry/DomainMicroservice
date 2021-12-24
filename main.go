@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/TaranovDmitry/DomainMicroservice/config"
@@ -18,16 +19,18 @@ type Server struct {
 }
 
 func main() {
-	logrus.SetFormatter(new(logrus.JSONFormatter))
+	logger := logrus.New()
+	logger.SetFormatter(new(logrus.JSONFormatter))
+	logger.SetOutput(os.Stdout)
 
 	cfg, err := config.New()
 	if err != nil {
-		logrus.Fatalf("failed to initialize config %v", err)
+		logger.Fatalf("failed to initialize config %v", err)
 	}
 
 	db, err := repository.NewPostgresDB(cfg.DB)
 	if err != nil {
-		logrus.Fatalf("failed to initialize db: %s", err.Error())
+		logger.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
 	portsRepository := repository.NewPortsRepository(db)
@@ -37,7 +40,7 @@ func main() {
 	var srv Server
 	if err := srv.Run(cfg.Port, handler.InitRouts()); err != nil {
 		_ = srv.Shutdown(context.TODO())
-		logrus.Fatalf("error occured while running http server %s", err.Error())
+		logger.Fatalf("error occured while running http server %s", err.Error())
 	}
 }
 
